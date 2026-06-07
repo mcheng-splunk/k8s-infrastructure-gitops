@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   destination:
-    server: https://52.74.235.129:6443
+    server: https://kubernetes.default.svc
     namespace: monitoring-dev
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
