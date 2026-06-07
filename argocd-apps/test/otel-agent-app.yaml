@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   destination:
-    server: aws-test-k3s
+    server: https://52.74.160.179:6443
     namespace: monitoring-test
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
