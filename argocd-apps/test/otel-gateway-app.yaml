@@ -9,9 +9,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: monitoring-prod
   sources:
-    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+    - repoURL: https://github.com/open-telemetry/opentelemetry-helm-charts/releases/download/opentelemetry-collector-0.157.2
       chart: open-telemetry-collector
-      targetRevision: 0.157.0
+      targetRevision: 0.157.2
       helm:
         releaseName: prod-otel-gateway
         valueFiles:
