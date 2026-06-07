@@ -17,7 +17,7 @@ spec:
         valueFiles:
           - $gitea-values/apps/opentelemetry/agent/base-agent.yaml
           - $gitea-values/apps/opentelemetry/agent/dev-values.yaml
-    - repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+    - repoURL: https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git
       targetRevision: main
       ref: gitea-values
   syncPolicy:

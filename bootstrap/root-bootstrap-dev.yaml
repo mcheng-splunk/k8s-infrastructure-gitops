@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+    repoURL: https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git
     targetRevision: main
     path: argocd-apps/dev  
   destination:
