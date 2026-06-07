@@ -10,7 +10,7 @@ spec:
     namespace: monitoring-dev
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-      chart: open-telemetry-collector
+      chart: opentelemetry-collector
       targetRevision: 0.151.0
       helm:
         releaseName: dev-otel-gateway
