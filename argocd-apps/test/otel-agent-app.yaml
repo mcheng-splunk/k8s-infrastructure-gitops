@@ -1,23 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-otel-agent
+  name: test-otel-agent
   namespace: argocd
 spec:
   project: default
   destination:
-    server: https://kubernetes.default.svc # Change if Prod is on an isolated cluster
-    namespace: monitoring-prod
+    server: https://kubernetes.default.svc
+    namespace: monitoring-test
   sources:
-    - repoURL: https://github.com/open-telemetry/opentelemetry-helm-charts/releases/download/opentelemetry-collector-0.157.2
-      chart: open-telemetry-collector
-      targetRevision: 0.157.2
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetry-collector
+      targetRevision: 0.151.0
       helm:
-        releaseName: prod-otel
+        releaseName: test-otel
         valueFiles:
           - $gitea-values/apps/opentelemetry/agent/base-agent.yaml
-          - $gitea-values/apps/opentelemetry/agent/prod-values.yaml
-    - repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+          - $gitea-values/apps/opentelemetry/agent/test-values.yaml
+    - repoURL: https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git
       targetRevision: main
       ref: gitea-values
   syncPolicy:
