@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-bootstrap-dev
+  name: cluster-bootstrap-test
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+    repoURL: https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git
     targetRevision: main
     path: argocd-apps/test  
   destination:
