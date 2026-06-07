@@ -1,0 +1,14 @@
+config:
+  processors:
+    memory_limiter:
+      check_interval: 500ms # More aggressive checks for high-throughput prod
+      limit_percentage: 85
+      spike_limit_percentage: 15
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 150m
+    memory: 512Mi

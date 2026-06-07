@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-otel-gateway
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring-prod
+  sources:
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: open-telemetry-collector
+      targetRevision: 0.157.0
+      helm:
+        releaseName: prod-otel-gateway
+        valueFiles:
+          - $gitea-values/apps/opentelemetry/gateway/base-gateway.yaml
+          - $gitea-values/apps/opentelemetry/gateway/prod-values.yaml
+    - repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+      targetRevision: main
+      ref: gitea-values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

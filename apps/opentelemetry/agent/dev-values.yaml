@@ -1,0 +1,18 @@
+config:
+  processors:
+    memory_limiter:
+      check_interval: 1s
+      limit_percentage: 80
+      spike_limit_percentage: 20
+  service:
+    telemetry:
+      logs:
+        level: "debug"
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 300Mi
+  requests:
+    cpu: 50m
+    memory: 150Mi

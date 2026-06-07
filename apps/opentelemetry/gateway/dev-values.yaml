@@ -1,0 +1,19 @@
+replicaCount: 1
+
+config:
+  processors:
+    memory_limiter:
+      check_interval: 1s
+      limit_percentage: 80
+  service:
+    telemetry:
+      logs:
+        level: "info"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi

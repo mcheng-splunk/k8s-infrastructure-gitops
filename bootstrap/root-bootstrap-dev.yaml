@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-bootstrap-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://192.168.20.192:3000/melvincheng/k8s-infrastructure-gitops.git
+    targetRevision: main
+    path: argocd-apps/dev  
+  destination:
+    server: https://kubernetes.default.svc # Deploys directly to the local cluster it runs on
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
