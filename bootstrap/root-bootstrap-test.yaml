@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: argocd-apps/test  
   destination:
-    server: https://52.74.160.179:6443 # Deploys directly to the local cluster it runs on
+    server: https://kubernetes.default.svc # Deploys directly to the local cluster it runs on
     namespace: argocd
   syncPolicy:
     automated:
