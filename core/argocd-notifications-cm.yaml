@@ -36,3 +36,7 @@ data:
     - description: Application syncing has failed
       send: [app-sync-failed] # Calls the template we defined above
       when: app.status.sync.status == 'Failed'
+      
+  trigger.on-status-unknown: |
+    - when: app.status.sync.status == 'Unknown'
+      send: [slack-webhook-template]
