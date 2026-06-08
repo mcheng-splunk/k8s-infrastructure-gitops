@@ -11,7 +11,7 @@ spec:
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
       chart: opentelemetry-collector
-      targetRevision: 0.151.0
+      targetRevision: 0.151.0x
       helm:
         releaseName: dev-otel
         valueFiles:
