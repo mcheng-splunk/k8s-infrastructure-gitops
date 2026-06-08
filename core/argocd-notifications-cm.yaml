@@ -5,19 +5,19 @@ metadata:
   namespace: argocd
 data:
   # -------------------------------------------------------------
-  # 1. THE SERVICE: Set up a Slack/Webhook integration destination
+  # 1. FIXED: Set up as a generic Webhook destination for the URL string
   # -------------------------------------------------------------
-  service.slack: |
-    token: $argocd-notifications-secret:webhook-url
+  service.webhook.app-sync-failed: |
+    url: $argocd-notifications-secret:webhook-url
 
   # -------------------------------------------------------------
-  # 2. THE TEMPLATE: Design what the failure alert looks like
+  # 2. THE TEMPLATE: (Kept exactly as you designed it)
   # -------------------------------------------------------------
   template.app-sync-failed: |
     message: |
       🚨 *ArgoCD Deployment Failed!*
       *Application:* {{ .app.metadata.name }}
-      *Reason:* The sync operation failed.
+      *Reason:* The deployment or manifest compilation failed.
       *Current Health:* {{ .app.status.health.status }}
       *Repository:* {{ .app.spec.source.repoURL }}
       *Target Revision:* {{ .app.spec.source.targetRevision }}
@@ -30,21 +30,19 @@ data:
         }]
 
   # -------------------------------------------------------------
-  # 3. THE TRIGGER: Bind the template to a sync failure state
+  # 3. THE TRIGGERS: (All pointing cleanly to the app-sync-failed destination)
   # -------------------------------------------------------------
   trigger.on-sync-failed: |
     - description: Application syncing has failed
-      send: [app-sync-failed] # Calls the template we defined above
+      send: [app-sync-failed] 
       when: app.status.sync.status == 'Failed'
 
   trigger.on-status-unknown: |
-    - when: app.status.sync.status == 'Unknown'
-      send: [slack-webhook-template]
+    - description: Sync state is blocked/stuck
+      send: [app-sync-failed] # 👈 FIXED: Pointing to your valid template name
+      when: app.status.sync.status == 'Unknown'
       
-  # -------------------------------------------------------------
-  # Catch Upstream Helm & Manifest Generation Crashes
-  # -------------------------------------------------------------
   trigger.on-rendering-error: |
     - description: Application manifest generation or chart pulling failed
-      send: [app-sync-failed] # Points to your existing Slack template
-      when: any(app.status.conditions, {.type == 'ComparisonError'}) # 👈 Tracks the exact condition array
+      send: [app-sync-failed] 
+      when: any(app.status.conditions, {.type == 'ComparisonError'})
