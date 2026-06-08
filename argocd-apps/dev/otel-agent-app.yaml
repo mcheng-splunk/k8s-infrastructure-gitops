@@ -10,8 +10,8 @@ spec:
     namespace: monitoring-dev
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-      chart: opentelemetry-collector
-      targetRevision: 0.151.0x
+      chart: opentelemetry-collector-BROKEN-TEST
+      targetRevision: 0.151.0
       helm:
         releaseName: dev-otel
         valueFiles:
