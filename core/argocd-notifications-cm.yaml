@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  # -------------------------------------------------------------
+  # 1. THE SERVICE: Set up a Slack/Webhook integration destination
+  # -------------------------------------------------------------
+  service.slack: |
+    token: $argocd-notifications-secret:webhook-url
+
+  # -------------------------------------------------------------
+  # 2. THE TEMPLATE: Design what the failure alert looks like
+  # -------------------------------------------------------------
+  template.app-sync-failed: |
+    message: |
+      🚨 *ArgoCD Deployment Failed!*
+      *Application:* {{ .app.metadata.name }}
+      *Reason:* The sync operation failed.
+      *Current Health:* {{ .app.status.health.status }}
+      *Repository:* {{ .app.spec.source.repoURL }}
+      *Target Revision:* {{ .app.spec.source.targetRevision }}
+    slack:
+      attachments: |
+        [{
+          "title": "Open ArgoCD Dashboard",
+          "title_link": "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}",
+          "color": "#FF0000"
+        }]
+
+  # -------------------------------------------------------------
+  # 3. THE TRIGGER: Bind the template to a sync failure state
+  # -------------------------------------------------------------
+  trigger.on-sync-failed: |
+    - description: Application syncing has failed
+      send: [app-sync-failed] # Calls the template we defined above
+      when: app.status.sync.status == 'Failed'
