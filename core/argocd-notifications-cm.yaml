@@ -4,9 +4,7 @@ metadata:
   name: argocd-notifications-cm
   namespace: argocd
 data:
-  # -------------------------------------------------------------
-  # 1. FIXED: Set up as a generic Webhook destination for the URL string
-  # -------------------------------------------------------------
+  # 1. REGISTER AS A WEBHOOK ROUTE instead of service.slack
   service.webhook.app-sync-failed: |
     url: $argocd-notifications-secret:webhook-url
 
