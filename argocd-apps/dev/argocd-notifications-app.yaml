@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git'
     targetRevision: HEAD
-    path: core/argocd-notifications # Points straight to your new directory
+    path: core # Points straight to your new directory
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd # Deploys directly into the core argocd engine namespace
