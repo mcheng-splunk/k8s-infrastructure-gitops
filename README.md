@@ -100,10 +100,10 @@ k8s-infrastructure-gitops/
 - Two gateway replicas for basic HA
 
 ### Production (prod)
-- Production cluster with HPA
+- Production cluster with OpenTelemetry Autoscaler
 - High resource allocation
 - Optimized memory/batch processors
-- Auto-scaling: 4-12 replicas based on CPU
+- Auto-scaling: 1-4 replicas based on CPU and memory utilization
 
 ## Deployment with ArgoCD
 
@@ -193,6 +193,7 @@ Each environment has two ArgoCD Applications:
 #### otel-gateway-app.yaml
 - Deploys OTel Gateway as Deployment
 - Namespace: `monitoring-{env}`
+- Uses `autoscaler` for prod (OpenTelemetry Operator autoscaler)
 - Aggregates data from agents and forwards to backend
 
 ### Syncing and Managing Applications
@@ -222,16 +223,18 @@ argocd app get dev-otel-agent
 
 ### Horizontal Pod Autoscaling (Prod Only)
 
-The production gateway has HPA configured:
+The production gateway uses the OpenTelemetry Operator's autoscaler:
 
 ```yaml
 # apps/opentelemetry/gateway/prod-values.yaml
-hpa:
-  enabled: true
-  minReplicas: 4
-  maxReplicas: 12
-  targetCPUUtilizationPercentage: 80
+autoscaler:
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilization: 50
+  targetMemoryUtilization: 60
 ```
+
+The OpenTelemetry Operator automatically creates a `HorizontalPodAutoscaler` resource when autoscaler is configured.
 
 ### Manual Scaling
 
@@ -244,7 +247,9 @@ kubectl scale deployment dev-otel-gateway-collector -n monitoring-dev --replicas
 # Scale test gateway (2 replicas)
 kubectl scale deployment test-otel-gateway-collector -n monitoring-test --replicas=2
 
-# Scale prod gateway (4 replicas minimum)
+# Scale prod gateway (1-4 replicas based on autoscaler config)
+kubectl scale deployment prod-otel-gateway-collector -n monitoring-prod --replicas=1
+```
 kubectl scale deployment prod-otel-gateway-collector -n monitoring-prod --replicas=4
 ```
 
@@ -293,8 +298,8 @@ The base configurations define the core behavior:
 | Setting | dev | test | prod |
 |---------|-----|------|------|
 | Memory Limiter Check | 1s | 1s | 500ms |
-| Memory Limit | 300Mi | 2Gi | 4Gi |
-| Gateway Replicas | 1 | 2 | 4-12 (HPA) |
+| Memory Limit | 300Mi | 2Gi | 128Mi |
+| Gateway Replicas | 1 | 2 | 1-4 (Autoscaler) |
 | Log Level | debug | info | info |
 
 ## Customizing Upstream Backend
@@ -315,11 +320,21 @@ Replace `your-observability-backend:4317` with your actual backend (Tempo, Jaege
 
 ## Troubleshooting
 
+### To Check Helm Chart Version With Otel Image Version
+```bash
+helm search repo opentelemetry-collector --versions | head -20
+```
+
 ### Check ArgoCD Sync Status
 
 ```bash
 argocd app get dev-otel-agent
 argocd app get dev-otel-gateway
+```
+
+### To View Otel Deployed Image Version
+```bash
+argocd app manifests dev-otel-agent | grep image
 ```
 
 ### View Agent Logs
@@ -340,15 +355,3 @@ kubectl logs -n monitoring-dev -l app.kubernetes.io/name=otel-gateway-collector 
 kubectl get hpa -n monitoring-prod
 kubectl describe hpa prod-otel-gateway-collector -n monitoring-prod
 ```
-
-## Contributing
-
-1. Create a feature branch
-2. Make changes to the appropriate environment directory
-3. Test in dev/test environments
-4. Open a PR for prod changes
-5. Changes auto-sync via ArgoCD
-
-## License
-
-MIT
