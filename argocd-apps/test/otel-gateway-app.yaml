@@ -11,7 +11,7 @@ spec:
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
       chart: opentelemetry-collector
-      targetRevision: 0.151.0
+      targetRevision: 0.157.2
       helm:
         releaseName: test-otel-gateway
         valueFiles:
@@ -22,8 +22,8 @@ spec:
       ref: gitea-values
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
