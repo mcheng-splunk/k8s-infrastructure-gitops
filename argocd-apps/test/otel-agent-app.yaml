@@ -20,7 +20,7 @@ spec:
     - repoURL: https://github.com/mcheng-splunk/k8s-infrastructure-gitops.git
       targetRevision: main
       ref: gitea-values
-  syncPolicy: {}
+  syncPolicy:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
